@@ -6,8 +6,17 @@
 #include <GL/glext.h>
 #include <GL/wgl.h>
 #include <GL/wglext.h>
+#include <atomic>
 #include <cstdio>
 #include <cstdlib>
+
+static std::atomic<GLuint> g_program_id{1};
+static std::atomic<GLuint> g_shader_id{1};
+static std::atomic<GLuint> g_texture_id{1};
+static std::atomic<GLuint> g_buffer_id{1};
+static std::atomic<GLuint> g_vao_id{1};
+static std::atomic<GLuint> g_fbo_id{1};
+static std::atomic<GLuint> g_rbo_id{1};
 
 #define UNIMPLEMENTED() \
 fprintf(stderr, "[VkWrapper] NOT IMPLEMENTED: %s\n", __func__)
@@ -16,7 +25,7 @@ extern "C" {
 
     __declspec(dllexport) GLuint WINAPI glCreateProgram() {
         UNIMPLEMENTED();
-        return 1; // fake handle
+        return g_program_id++;
     }
 
     __declspec(dllexport) void WINAPI glShaderSource(
@@ -30,7 +39,7 @@ extern "C" {
 
     // ── Shader ──────────────────────────────────────────────
     __declspec(dllexport) GLuint WINAPI glCreateShader(GLenum type) {
-        UNIMPLEMENTED(); return 1;
+        UNIMPLEMENTED(); return g_shader_id++;
     }
     __declspec(dllexport) void WINAPI glCompileShader(GLuint shader) {
         UNIMPLEMENTED();
@@ -62,7 +71,7 @@ extern "C" {
 
     // ── Uniforms ─────────────────────────────────────────────
     __declspec(dllexport) GLint WINAPI glGetUniformLocation(GLuint program, const GLchar* name) {
-        UNIMPLEMENTED(); return 0;
+        UNIMPLEMENTED(); return -1;
     }
     __declspec(dllexport) void WINAPI glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, const GLfloat* value) {
         UNIMPLEMENTED();
@@ -113,7 +122,7 @@ extern "C" {
     // ── Textures ─────────────────────────────────────────────
     __declspec(dllexport) void WINAPI glGenTextures(GLsizei n, GLuint* textures) {
         UNIMPLEMENTED();
-        for (GLsizei i = 0; i < n; i++) textures[i] = i + 1;
+        for (GLsizei i = 0; i < n; i++) textures[i] = g_texture_id++;
     }
     __declspec(dllexport) void WINAPI glBindTexture(GLenum target, GLuint texture) {
         UNIMPLEMENTED();
@@ -137,7 +146,7 @@ extern "C" {
     // ── Buffer Objects ────────────────────────────────────────
     __declspec(dllexport) void WINAPI glGenBuffers(GLsizei n, GLuint* buffers) {
         UNIMPLEMENTED();
-        for (GLsizei i = 0; i < n; i++) buffers[i] = i + 1;
+        for (GLsizei i = 0; i < n; i++) buffers[i] = g_buffer_id++;
     }
     __declspec(dllexport) void WINAPI glBindBuffer(GLenum target, GLuint buffer) {
         UNIMPLEMENTED();
@@ -155,7 +164,7 @@ extern "C" {
     // ── Vertex Arrays ─────────────────────────────────────────
     __declspec(dllexport) void WINAPI glGenVertexArrays(GLsizei n, GLuint* arrays) {
         UNIMPLEMENTED();
-        for (GLsizei i = 0; i < n; i++) arrays[i] = i + 1;
+        for (GLsizei i = 0; i < n; i++) arrays[i] = g_vao_id++;
     }
     __declspec(dllexport) void WINAPI glBindVertexArray(GLuint array) {
         UNIMPLEMENTED();
@@ -218,7 +227,7 @@ extern "C" {
     // ── Framebuffer Objects ───────────────────────────────────
     __declspec(dllexport) void WINAPI glGenFramebuffers(GLsizei n, GLuint* framebuffers) {
         UNIMPLEMENTED();
-        for (GLsizei i = 0; i < n; i++) framebuffers[i] = i + 1;
+        for (GLsizei i = 0; i < n; i++) framebuffers[i] = g_fbo_id++;
     }
     __declspec(dllexport) void WINAPI glBindFramebuffer(GLenum target, GLuint framebuffer) {
         UNIMPLEMENTED();
@@ -233,7 +242,7 @@ extern "C" {
     }
     __declspec(dllexport) void WINAPI glGenRenderbuffers(GLsizei n, GLuint* renderbuffers) {
         UNIMPLEMENTED();
-        for (GLsizei i = 0; i < n; i++) renderbuffers[i] = i + 1;
+        for (GLsizei i = 0; i < n; i++) renderbuffers[i] = g_rbo_id++;
     }
     __declspec(dllexport) void WINAPI glBindRenderbuffer(GLenum target, GLuint renderbuffer) {
         UNIMPLEMENTED();
